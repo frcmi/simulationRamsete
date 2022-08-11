@@ -16,10 +16,12 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.utils.DrivebaseSimFX;
 import frc.robot.utils.TalonFXUtil;
 
@@ -95,10 +97,17 @@ public class DrivetrainTalonFXSubsystem extends SubsystemBase {
         return (leftFeet + rightFeet) * 0.5;
     }
 
+    public double getLeftVelocity() {
+        return leftMaster.getSelectedSensorVelocity() * DriveConstants.kEncoderDistancePerTick * 10;
+    }
+    
+    public double getRightVelocity() {
+        return rightMaster.getSelectedSensorVelocity() * DriveConstants.kEncoderDistancePerTick * 10;
+    }
+    
     public DifferentialDriveWheelSpeeds getWheelSpeeds() {
-        return new DifferentialDriveWheelSpeeds(Math.abs((leftMaster.getSelectedSensorVelocity())), 
-        (rightMaster.getSelectedSensorVelocity()));
-      }
+        return new DifferentialDriveWheelSpeeds(getLeftVelocity(), getRightVelocity());
+    }
 
     public void updateOdometry() {
         odometry.update(pidgey.getRotation2d(),
