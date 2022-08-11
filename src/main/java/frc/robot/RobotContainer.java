@@ -12,6 +12,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -67,10 +68,17 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-<<<<<<< HEAD
 
+        //troubleshooting
         RamseteController m_disabledRamsete = new RamseteController();
         m_disabledRamsete.setEnabled(false);
+        var table = NetworkTableInstance.getDefault().getTable("troubleshooting");
+        var leftReference = table.getEntry("left_reference");
+        var leftMeasurement = table.getEntry("left_measurement");
+        var rightReference = table.getEntry("right_reference");
+        var rightMeasurement = table.getEntry("right_measurement");
+        var leftController = new PIDController(0, 0, 0);
+        var rightController = new PIDController(0, 0, 0);
 
         //return chooser.getSelected();
         var autoVoltageConstraint =
@@ -81,16 +89,6 @@ public class RobotContainer {
                     DriveConstants.kaVoltSecondsSquaredPerMeter),
                 DriveConstants.kDriveKinematics,
                 11);
-=======
-        var autoVoltageConstraint =
-        new DifferentialDriveVoltageConstraint(
-            new SimpleMotorFeedforward(
-                DriveConstants.ksVolts,
-                DriveConstants.kvVoltSecondsPerMeter,
-                DriveConstants.kaVoltSecondsSquaredPerMeter),
-            DriveConstants.kDriveKinematics,
-            11);
->>>>>>> main
 
         // Create config for trajectory
         TrajectoryConfig config =
@@ -118,36 +116,31 @@ public class RobotContainer {
             new RamseteCommand(
                 exampleTrajectory,
                 drivetrain::getPose,
-<<<<<<< HEAD
                 //new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
                 m_disabledRamsete,
-=======
-                new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
->>>>>>> main
                 new SimpleMotorFeedforward(
                     DriveConstants.ksVolts,
                     DriveConstants.kvVoltSecondsPerMeter,
                     DriveConstants.kaVoltSecondsSquaredPerMeter),
                 DriveConstants.kDriveKinematics,
                 drivetrain::getWheelSpeeds,
-<<<<<<< HEAD
                 new PIDController(0, 0, 0),
                 new PIDController(0, 0, 0),
-=======
-                new PIDController(DriveConstants.kPDriveVel, 0, 0),
-                new PIDController(DriveConstants.kPDriveVel, 0, 0),
->>>>>>> main
                 // RamseteCommand passes volts to the callback
-                drivetrain::tankDriveVolts,
+                //drivetrain::tankDriveVolts,
+                (leftVolts, rightVolts) -> {
+                    drivetrain.tankDriveVolts(leftVolts, rightVolts);
+            
+                    leftMeasurement.setNumber(drivetrain.getWheelSpeeds().leftMetersPerSecond);
+                    leftReference.setNumber(leftController.getSetpoint());
+            
+                    rightMeasurement.setNumber(drivetrain.getWheelSpeeds().rightMetersPerSecond);
+                    rightReference.setNumber(rightController.getSetpoint());
+                },
                 drivetrain);
 
         // Reset odometry to the starting pose of the trajectory.
         drivetrain.resetOdometry(exampleTrajectory.getInitialPose());
-<<<<<<< HEAD
-=======
-
-        // Run path following command, then stop at the end.
->>>>>>> main
         return ramseteCommand.andThen(() -> drivetrain.tankDriveVolts(0, 0));
     }
 
