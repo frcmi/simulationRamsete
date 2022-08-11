@@ -16,10 +16,12 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.utils.DrivebaseSimFX;
 import frc.robot.utils.TalonFXUtil;
 
@@ -76,7 +78,7 @@ public class DrivetrainTalonFXSubsystem extends SubsystemBase {
         leftMaster.setVoltage(leftVolts);
         rightMaster.setVoltage(rightVolts);
         diffDrive.feed();
-      }
+    }
 
     public void stop() {
         diffDrive.arcadeDrive(0.0, 0.0);
@@ -95,10 +97,19 @@ public class DrivetrainTalonFXSubsystem extends SubsystemBase {
         return (leftFeet + rightFeet) * 0.5;
     }
 
+      // Get the Left Wheel Velocity of the Robot in Meters per Second
+    public double getLeftVelocity() {
+        return leftMaster.getSelectedSensorVelocity() * Units.inchesToMeters(DriveConstants.kWheelCircumference) / 60;
+    }
+
+    // Get the Right Wheel Velocity of the Robot in Meters per Second
+    public double getRightVelocity() {
+        return rightMaster.getSelectedSensorVelocity() * Units.inchesToMeters(DriveConstants.kWheelCircumference) / 60;
+    }
+
     public DifferentialDriveWheelSpeeds getWheelSpeeds() {
-        return new DifferentialDriveWheelSpeeds(Math.abs((leftMaster.getSelectedSensorVelocity())), 
-        (rightMaster.getSelectedSensorVelocity()));
-      }
+        return new DifferentialDriveWheelSpeeds(getLeftVelocity(), getRightVelocity());
+    }
 
     public void updateOdometry() {
         odometry.update(pidgey.getRotation2d(),
@@ -107,7 +118,7 @@ public class DrivetrainTalonFXSubsystem extends SubsystemBase {
     }
 
     public void updateField() {
-        field.setRobotPose(odometry.getPoseMeters());
+        field.setRobotPose(getPose());
     }
 
     public Pose2d getPose() {
