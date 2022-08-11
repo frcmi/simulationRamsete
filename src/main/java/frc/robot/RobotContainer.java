@@ -67,14 +67,17 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
+        var leftController = new PIDController(DriveConstants.kPDriveVel, 0, 0);
+        var rightController = new PIDController(DriveConstants.kPDriveVel, 0, 0);
+
         var autoVoltageConstraint =
-        new DifferentialDriveVoltageConstraint(
-            new SimpleMotorFeedforward(
-                DriveConstants.ksVolts,
-                DriveConstants.kvVoltSecondsPerMeter,
-                DriveConstants.kaVoltSecondsSquaredPerMeter),
-            DriveConstants.kDriveKinematics,
-            11);
+            new DifferentialDriveVoltageConstraint(
+                new SimpleMotorFeedforward(
+                    DriveConstants.ksVolts,
+                    DriveConstants.kvVoltSecondsPerMeter,
+                    DriveConstants.kaVoltSecondsSquaredPerMeter),
+                DriveConstants.kDriveKinematics,
+                11);
 
         // Create config for trajectory
         TrajectoryConfig config =
@@ -109,9 +112,8 @@ public class RobotContainer {
                     DriveConstants.kaVoltSecondsSquaredPerMeter),
                 DriveConstants.kDriveKinematics,
                 drivetrain::getWheelSpeeds,
-                new PIDController(DriveConstants.kPDriveVel, 0, 0),
-                new PIDController(DriveConstants.kPDriveVel, 0, 0),
-                // RamseteCommand passes volts to the callback
+                leftController,
+                rightController,                // RamseteCommand passes volts to the callback
                 drivetrain::tankDriveVolts,
                 drivetrain);
 
