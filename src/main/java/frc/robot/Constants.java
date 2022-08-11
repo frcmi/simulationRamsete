@@ -31,10 +31,8 @@ public final class Constants {
     public static final int kEncoderCPR = 2048;
     public static final double kWheelDiameterMeters = 0.1524; //I don't fucking know. Need to measure and calculate
     public static final double kWheelCircumference = Math.PI * kWheelDiameterMeters;
-    public static final double kGearRatio = 11.6364; //Change I think
-    public static final double kEncoderDistancePerPulse =
-        // Assumes the encoders are directly mounted on the wheel shafts
-        kWheelCircumference / kEncoderCPR * kGearRatio;
+    public static final double kGearRatio = 10.9091; //Change I think
+    public static final double kEncoderDistancePerTick = kWheelCircumference / kGearRatio / kEncoderCPR ;
 
     // These are example values only - DO NOT USE THESE FOR YOUR OWN ROBOT!
     // These characterization values MUST be determined either experimentally or theoretically

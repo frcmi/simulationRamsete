@@ -31,7 +31,7 @@ public class RobotContainer {
 
     public static final Joystick stick = new Joystick(0);
 
-    private final SendableChooser<Command> chooser = new SendableChooser<>();
+    //private final SendableChooser<Command> chooser = new SendableChooser<>();
 
     // Subsystems
     public static final DrivetrainTalonFXSubsystem drivetrain = new DrivetrainTalonFXSubsystem();
@@ -67,6 +67,7 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
+<<<<<<< HEAD
 
         RamseteController m_disabledRamsete = new RamseteController();
         m_disabledRamsete.setEnabled(false);
@@ -80,6 +81,16 @@ public class RobotContainer {
                     DriveConstants.kaVoltSecondsSquaredPerMeter),
                 DriveConstants.kDriveKinematics,
                 11);
+=======
+        var autoVoltageConstraint =
+        new DifferentialDriveVoltageConstraint(
+            new SimpleMotorFeedforward(
+                DriveConstants.ksVolts,
+                DriveConstants.kvVoltSecondsPerMeter,
+                DriveConstants.kaVoltSecondsSquaredPerMeter),
+            DriveConstants.kDriveKinematics,
+            11);
+>>>>>>> main
 
         // Create config for trajectory
         TrajectoryConfig config =
@@ -107,22 +118,36 @@ public class RobotContainer {
             new RamseteCommand(
                 exampleTrajectory,
                 drivetrain::getPose,
+<<<<<<< HEAD
                 //new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
                 m_disabledRamsete,
+=======
+                new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
+>>>>>>> main
                 new SimpleMotorFeedforward(
                     DriveConstants.ksVolts,
                     DriveConstants.kvVoltSecondsPerMeter,
                     DriveConstants.kaVoltSecondsSquaredPerMeter),
                 DriveConstants.kDriveKinematics,
                 drivetrain::getWheelSpeeds,
+<<<<<<< HEAD
                 new PIDController(0, 0, 0),
                 new PIDController(0, 0, 0),
+=======
+                new PIDController(DriveConstants.kPDriveVel, 0, 0),
+                new PIDController(DriveConstants.kPDriveVel, 0, 0),
+>>>>>>> main
                 // RamseteCommand passes volts to the callback
                 drivetrain::tankDriveVolts,
                 drivetrain);
 
         // Reset odometry to the starting pose of the trajectory.
         drivetrain.resetOdometry(exampleTrajectory.getInitialPose());
+<<<<<<< HEAD
+=======
+
+        // Run path following command, then stop at the end.
+>>>>>>> main
         return ramseteCommand.andThen(() -> drivetrain.tankDriveVolts(0, 0));
     }
 

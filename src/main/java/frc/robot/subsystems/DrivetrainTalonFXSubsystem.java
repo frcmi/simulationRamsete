@@ -97,6 +97,7 @@ public class DrivetrainTalonFXSubsystem extends SubsystemBase {
         return (leftFeet + rightFeet) * 0.5;
     }
 
+<<<<<<< HEAD
       // Get the Left Wheel Velocity of the Robot in Meters per Second
     public double getLeftVelocity() {
         return leftMaster.getSelectedSensorVelocity() * Units.inchesToMeters(DriveConstants.kWheelCircumference) / 60;
@@ -107,6 +108,16 @@ public class DrivetrainTalonFXSubsystem extends SubsystemBase {
         return rightMaster.getSelectedSensorVelocity() * Units.inchesToMeters(DriveConstants.kWheelCircumference) / 60;
     }
 
+=======
+    public double getLeftVelocity() {
+        return leftMaster.getSelectedSensorVelocity() * DriveConstants.kEncoderDistancePerTick * 10;
+    }
+    
+    public double getRightVelocity() {
+        return rightMaster.getSelectedSensorVelocity() * DriveConstants.kEncoderDistancePerTick * 10;
+    }
+    
+>>>>>>> main
     public DifferentialDriveWheelSpeeds getWheelSpeeds() {
         return new DifferentialDriveWheelSpeeds(getLeftVelocity(), getRightVelocity());
     }
