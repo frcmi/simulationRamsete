@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.DrivetrainTalonFXSubsystem;
 
 public class DrivebaseSimFX {
@@ -24,10 +25,10 @@ public class DrivebaseSimFX {
     //Simulation model of the drivetrain
     private DifferentialDrivetrainSim _driveSim = new DifferentialDrivetrainSim(
             DCMotor.getFalcon500(2),  //2 Falcon 500s on each side of the drivetrain.
-            DrivetrainTalonFXSubsystem.kGearRatio,               //Standard AndyMark Gearing reduction.
+            DriveConstants.kGearRatio,               //Standard AndyMark Gearing reduction.
             2.1,                      //MOI of 2.1 kg m^2 (from CAD model).
             26.5,                     //Mass of the robot is 26.5 kg.
-            Units.inchesToMeters(DrivetrainTalonFXSubsystem.kWheelRadiusInches),  //Robot uses 3" radius (6" diameter) wheels.
+            DriveConstants.kWheelDiameterMeters / 2,  //Robot uses 3" radius (6" diameter) wheels.
             0.546,                    //Distance between wheels is _ meters.
 
             // The standard deviations for measurement noise:

@@ -29,9 +29,9 @@ public final class Constants {
         new DifferentialDriveKinematics(kTrackwidthMeters);
 
     public static final int kEncoderCPR = 2048;
-    public static final double kWheelDiameterMeters = 0.1524; //I don't fucking know. Need to measure and calculate
+    public static final double kWheelDiameterMeters = 0.1524;
     public static final double kWheelCircumference = Math.PI * kWheelDiameterMeters;
-    public static final double kGearRatio = 10.9091; //Change I think
+    public static final double kGearRatio = 10.9091; 
     public static final double kEncoderDistancePerTick = kWheelCircumference / kGearRatio / kEncoderCPR ;
 
     // These are example values only - DO NOT USE THESE FOR YOUR OWN ROBOT!

@@ -40,9 +40,6 @@ public class DrivetrainTalonFXSubsystem extends SubsystemBase {
 
     private DifferentialDrive diffDrive = new DifferentialDrive(leftMaster, rightMaster);
 
-    public static final double kWheelRadiusInches = 3;
-    public static final double kGearRatio = 11.64;
-
     private DrivebaseSimFX driveSim = new DrivebaseSimFX(leftMaster, rightMaster, pidgey);
 
     public DrivetrainTalonFXSubsystem() {
@@ -90,11 +87,11 @@ public class DrivetrainTalonFXSubsystem extends SubsystemBase {
     }
 
     public double getAverageDistance() {
-        double leftFeet = TalonFXUtil.nativeUnitsToDistanceFeet(leftMaster.getSelectedSensorPosition());
-        double rightFeet = TalonFXUtil.nativeUnitsToDistanceFeet(rightMaster.getSelectedSensorPosition());
-        System.out.printf("INFO: Left: %.02f, Right: %.02f%n", leftFeet, rightFeet);
-        System.out.printf("      Average: %.02f%n", (leftFeet + rightFeet) * 0.5);
-        return (leftFeet + rightFeet) * 0.5;
+        double leftMeters = TalonFXUtil.nativeUnitsToDistanceMeters(leftMaster.getSelectedSensorPosition());
+        double rightMeters = TalonFXUtil.nativeUnitsToDistanceMeters(rightMaster.getSelectedSensorPosition());
+        System.out.printf("INFO: Left: %.02f, Right: %.02f%n", leftMeters, rightMeters);
+        System.out.printf("      Average: %.02f%n", (leftMeters + rightMeters) * 0.5);
+        return (leftMeters + rightMeters) * 0.5;
     }
 
     public double getLeftVelocity() {
