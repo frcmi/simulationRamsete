@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import java.util.List;
+import edu.wpi.first.wpilibj2.command.RamseteCommand;
 
 
 
@@ -73,22 +74,22 @@ public class DriveRamseteTrajectory extends CommandBase {
                 // Pass config
                 config);
 
-        RamseteCommand ramseteCommand =
-            new RamseteCommand(
-                exampleTrajectory,
-                drivetrainTalonFXSubsystem::getPose,
-                new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
-                new SimpleMotorFeedforward(
-                    DriveConstants.ksVolts,
-                    DriveConstants.kvVoltSecondsPerMeter,
-                    DriveConstants.kaVoltSecondsSquaredPerMeter),
-                DriveConstants.kDriveKinematics,
-                drivetrainTalonFXSubsystem::getWheelSpeeds,
-                new PIDController(DriveConstants.kPDriveVel, 0, 0),
-                new PIDController(DriveConstants.kPDriveVel, 0, 0),
-                // RamseteCommand passes volts to the callback
-                drivetrainTalonFXSubsystem::tankDriveVolts,
-                drivetrainTalonFXSubsystem);
+                RamseteCommand ramseteCommand =
+                new RamseteCommand(
+                    exampleTrajectory,
+                    drivetrainTalonFXSubsystem::getPose,
+                    new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
+                    new SimpleMotorFeedforward(
+                        DriveConstants.ksVolts,
+                        DriveConstants.kvVoltSecondsPerMeter,
+                        DriveConstants.kaVoltSecondsSquaredPerMeter),
+                    DriveConstants.kDriveKinematics,
+                    drivetrainTalonFXSubsystem::getWheelSpeeds,
+                    new PIDController(DriveConstants.kPDriveVel, 0, 0),
+                    new PIDController(DriveConstants.kPDriveVel, 0, 0),
+                    // RamseteCommand passes volts to the callback
+                    drivetrainTalonFXSubsystem::tankDriveVolts,
+                    drivetrainTalonFXSubsystem);
 
         // Reset odometry to the starting pose of the trajectory.
         drivetrainTalonFXSubsystem.resetOdometry(exampleTrajectory.getInitialPose());
