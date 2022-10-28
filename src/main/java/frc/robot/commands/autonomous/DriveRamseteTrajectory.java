@@ -99,7 +99,7 @@ public class DriveRamseteTrajectory extends CommandBase {
     public void end(boolean interrupted) {
         System.out.printf("INFO: DriveForTimeCommand \"end\": interrupted = %b%n", interrupted);
         super.end(interrupted);
-        drivetrainTalonFXSubsystem.stop();
+        drivetrainTalonFXSubsystem.arcDrive(0.0, 0.0); //stop 
     }
 
     @Override

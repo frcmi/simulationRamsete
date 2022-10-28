@@ -19,19 +19,10 @@ public class JoystickDriveCommand extends CommandBase {
         this.drivetrainTalonFXSubsystem = drivetrainTalonFXSubsystem;
         this.joyY = joyY;
         this.joyX = joyX;
-        this.joyZ = joyZ;
-        addRequirements(this.drivetrainTalonFXSubsystem);
-    }
-
-    public JoystickDriveCommand(DrivetrainTalonFXSubsystem drivetrainTalonFXSubsystem,
-                                DoubleSupplier joyY,
-                                DoubleSupplier joyX) {
-        this.drivetrainTalonFXSubsystem = drivetrainTalonFXSubsystem;
-        this.joyY = joyY;
-        this.joyX = joyX;
         this.joyZ = () -> 1.0;
         addRequirements(this.drivetrainTalonFXSubsystem);
     }
+
 
     @Override
     public void initialize() {
@@ -40,7 +31,7 @@ public class JoystickDriveCommand extends CommandBase {
 
     @Override
     public void execute() {
-        drivetrainTalonFXSubsystem.arcadeDrive(joyY.getAsDouble(), joyX.getAsDouble());
+        drivetrainTalonFXSubsystem.arcDrive(joyY.getAsDouble(), joyX.getAsDouble());
     }
 
     @Override

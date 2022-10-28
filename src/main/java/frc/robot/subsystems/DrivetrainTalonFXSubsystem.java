@@ -28,92 +28,125 @@ import frc.robot.utils.TalonFXUtil;
 
 public class DrivetrainTalonFXSubsystem extends SubsystemBase {
 
-    private WPI_TalonFX leftMaster = new WPI_TalonFX(5);
-    private WPI_TalonFX leftSlave = new WPI_TalonFX(4);
-    private WPI_TalonFX rightMaster = new WPI_TalonFX(2);
-    private WPI_TalonFX rightSlave = new WPI_TalonFX(3);
 
-    WPI_Pigeon2 pidgey = new WPI_Pigeon2(1);
+    /**  -------- Coding an Archade Drive Train --------   
+     * 
+     * 1) Create Motor Objects for each motor. Pass in port # 
+     * ex: private [Motor Model] [Motor Name] = new [Motor Model]([Port #]); 
+     * 
+     * 2) Create Pigeon. Pass in 1
+     * ex: WPI_Pigeon2 [Pigeon Name] = new WPI_Pigeon2(1);
+     * 
+     * 3) Create field 
+     * ex: private Field2d [Field Name] = new Field2d(); 
+     * 
+     * 4) create odometry differential Drive and drive Simulation
+     * ex: private DifferentialDriveOdometry [name] = new DifferentialDriveOdometry(new Rotation2d()); 
+     * ex: private DifferentialDrive [name] = new DifferentialDrive(leftMaster, rightMaster);
+     * ex: private DrivebaseSimFX [name] = new DrivebaseSimFX(leftMaster, rightMaster, pidgey);
+     * 
+     * 5) configure, bind, and set spin in constructor
+     * costructor: public DrivetrainTalonFXSubsystem() {} 
+     * config motors. do to all motors: [motor name].configFactoryDefault(); 
+     * bind motors. make left and right: [slave motor name].follow([master motor name]);
+     * spin. left should be counter clockwise and vise versa:
+     * spin: [master motor name].setInverted(TalonFXInvertType.[direction]);
+     * spin: [slave motor name].setInverted(InvertType.FollowMaster);
+     * 
+     * 6) paste these in said constructor: 
+     *  [Diffrential drive name].setSafetyEnabled(false);
+     *  SmartDashboard.putData("Field", field);
+     * */ 
 
-    private Field2d field = new Field2d();
-    private DifferentialDriveOdometry odometry = new DifferentialDriveOdometry(new Rotation2d());
+    WPI_Pigeon2 pige = new WPI_Pigeon2(1); 
 
-    private DifferentialDrive diffDrive = new DifferentialDrive(leftMaster, rightMaster);
+    private Field2d plane = new Field2d();
+    
+    private WPI_TalonFX leftM = new WPI_TalonFX(5); 
+    private WPI_TalonFX leftS = new WPI_TalonFX(4); 
+    private WPI_TalonFX rightM = new WPI_TalonFX(2); 
+    private WPI_TalonFX rightS = new WPI_TalonFX(3); 
 
-    private DrivebaseSimFX driveSim = new DrivebaseSimFX(leftMaster, rightMaster, pidgey);
+    private DifferentialDriveOdometry odometry = new DifferentialDriveOdometry(new Rotation2d()); 
+    private DifferentialDrive dDrive = new DifferentialDrive(leftM, rightM);
+    private DrivebaseSimFX driveSim = new DrivebaseSimFX(leftM, rightM, pige);
+    
+    public DrivetrainTalonFXSubsystem() { 
 
-    public DrivetrainTalonFXSubsystem() {
-        leftMaster.configFactoryDefault();
-        leftSlave.configFactoryDefault();
-        rightMaster.configFactoryDefault();
-        rightSlave.configFactoryDefault();
+        SmartDashboard.putData("Field", plane); 
+        dDrive.setSafetyEnabled(false);
 
-        leftSlave.follow(leftMaster);
-        rightSlave.follow(rightMaster);
+        leftS.follow(leftM);
+        rightS.follow(rightM); 
 
-        // Spin counterclockwise (default) - Spin Clockwise (invert direction)
-        leftMaster.setInverted(TalonFXInvertType.CounterClockwise);
-        rightMaster.setInverted(TalonFXInvertType.Clockwise);
+        leftM.setInverted(TalonFXInvertType.CounterClockwise);
+        rightM.setInverted(TalonFXInvertType.Clockwise);
+        leftS.setInverted(InvertType.FollowMaster);
+        rightS.setInverted(InvertType.FollowMaster);
 
-        leftSlave.setInverted(InvertType.FollowMaster);
-        rightSlave.setInverted(InvertType.FollowMaster);
-
-        diffDrive.setSafetyEnabled(false);
-
-        SmartDashboard.putData("Field", field);
     }
 
-    public void arcadeDrive(double xSpeed, double zRotation) {
-        diffDrive.arcadeDrive(xSpeed, zRotation);
-    }
+    public void arcDrive(double xSpeed, double zRotation) {
 
-    public void arcadeDrive(double xSpeed, double zRotation, boolean squareInputs) {
-        diffDrive.arcadeDrive(xSpeed, zRotation, squareInputs);
-    }
+        dDrive.arcadeDrive(xSpeed, zRotation);
 
-    public void tankDriveVolts(double leftVolts, double rightVolts) {
-        leftMaster.setVoltage(leftVolts);
-        rightMaster.setVoltage(rightVolts);
-        diffDrive.feed();
-      }
-
-    public void stop() {
-        diffDrive.arcadeDrive(0.0, 0.0);
     }
 
     public void reset() {
-        leftMaster.setSelectedSensorPosition(0.0);
-        rightMaster.setSelectedSensorPosition(0.0);
+
+        leftM.setSelectedSensorPosition(0.0);
+        rightM.setSelectedSensorPosition(0.0);
+
+    }
+
+    public void tankDriveVolts(double leftVolts, double rightVolts) {
+
+        leftM.setVoltage(leftVolts);
+        rightM.setVoltage(rightVolts); 
+        dDrive.feed();
+
+    }
+
+    //left is left right is right no caps or spaces will defualt to right with no input
+    public double getVelocity(String side) {
+
+        if (side == "left") {
+
+            return leftM.getSelectedSensorVelocity() * DriveConstants.kEncoderDistancePerTick * 10; 
+
+        }
+        else {
+
+            return rightM.getSelectedSensorVelocity() * DriveConstants.kEncoderDistancePerTick * 10; 
+
+        }
+
     }
 
     public double getAverageDistance() {
-        double leftMeters = TalonFXUtil.nativeUnitsToDistanceMeters(leftMaster.getSelectedSensorPosition());
-        double rightMeters = TalonFXUtil.nativeUnitsToDistanceMeters(rightMaster.getSelectedSensorPosition());
+
+        double leftMeters = TalonFXUtil.nativeUnitsToDistanceMeters(leftM.getSelectedSensorPosition());
+        double rightMeters = TalonFXUtil.nativeUnitsToDistanceMeters(rightM.getSelectedSensorPosition());
         System.out.printf("INFO: Left: %.02f, Right: %.02f%n", leftMeters, rightMeters);
         System.out.printf("      Average: %.02f%n", (leftMeters + rightMeters) * 0.5);
         return (leftMeters + rightMeters) * 0.5;
+
     }
 
-    public double getLeftVelocity() {
-        return leftMaster.getSelectedSensorVelocity() * DriveConstants.kEncoderDistancePerTick * 10;
-    }
-    
-    public double getRightVelocity() {
-        return rightMaster.getSelectedSensorVelocity() * DriveConstants.kEncoderDistancePerTick * 10;
-    }
-    
     public DifferentialDriveWheelSpeeds getWheelSpeeds() {
-        return new DifferentialDriveWheelSpeeds(getLeftVelocity(), getRightVelocity());
+
+        return new DifferentialDriveWheelSpeeds(getVelocity("left"), getVelocity("right"));
+
     }
 
     public void updateOdometry() {
-        odometry.update(pidgey.getRotation2d(),
-                TalonFXUtil.nativeUnitsToDistanceMeters(leftMaster.getSelectedSensorPosition()),
-                TalonFXUtil.nativeUnitsToDistanceMeters(rightMaster.getSelectedSensorPosition()));
+        odometry.update(pige.getRotation2d(),
+                TalonFXUtil.nativeUnitsToDistanceMeters(leftM.getSelectedSensorPosition()),
+                TalonFXUtil.nativeUnitsToDistanceMeters(rightM.getSelectedSensorPosition()));
     }
 
     public void updateField() {
-        field.setRobotPose(odometry.getPoseMeters());
+        plane.setRobotPose(odometry.getPoseMeters());
     }
 
     public Pose2d getPose() {
@@ -122,7 +155,7 @@ public class DrivetrainTalonFXSubsystem extends SubsystemBase {
 
     public void resetOdometry(Pose2d pose) {
         reset();
-        odometry.resetPosition(pose, pidgey.getRotation2d());
+        odometry.resetPosition(pose, pige.getRotation2d());
       }
 
     @Override
@@ -135,4 +168,3 @@ public class DrivetrainTalonFXSubsystem extends SubsystemBase {
         driveSim.run();
     }
 }
-

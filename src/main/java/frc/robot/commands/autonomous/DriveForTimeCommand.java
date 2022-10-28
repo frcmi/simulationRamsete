@@ -24,14 +24,14 @@ public class DriveForTimeCommand extends WaitCommand {
     public void initialize() {
         System.out.println("INFO: DriveForTimeCommand \"initialize\"");
         super.initialize();
-        drivetrainTalonFXSubsystem.arcadeDrive(speed, 0.0);
+        drivetrainTalonFXSubsystem.arcDrive(speed, 0.0);
     }
 
     @Override
     public void end(boolean interrupted) {
         System.out.printf("INFO: DriveForTimeCommand \"end\": interrupted = %b%n", interrupted);
         super.end(interrupted);
-        drivetrainTalonFXSubsystem.stop();
+        drivetrainTalonFXSubsystem.arcDrive(0.0, 0.0); //stop 
     }
 
     @Override

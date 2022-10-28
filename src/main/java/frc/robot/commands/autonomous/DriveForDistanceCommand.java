@@ -24,7 +24,7 @@ public class DriveForDistanceCommand extends CommandBase {
     public void initialize() {
         System.out.printf("INFO: DriveForDistanceCommand \"initialize\" (Target Distance: %.02f)%n", targetDistance);
         // drivetrainTalonFXSubsystem.reset();
-        drivetrainTalonFXSubsystem.arcadeDrive(speed, 0.0);
+        drivetrainTalonFXSubsystem.arcDrive(speed, 0.0);
     }
 
     @Override
@@ -42,7 +42,7 @@ public class DriveForDistanceCommand extends CommandBase {
     public void end(boolean interrupted) {
         System.out.printf("INFO: DriveForDistanceCommand \"end\": interrupted = %b%n", interrupted);
         initialDistance = null;
-        drivetrainTalonFXSubsystem.stop();
+        drivetrainTalonFXSubsystem.arcDrive(0.0, 0.0); //stop 
     }
 
     private double initialDistance() {
