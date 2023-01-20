@@ -63,8 +63,8 @@ public final class Constants {
     public static final double kRamseteZeta = 0.7;
 
     public static final double kTurnP = 1.0;
-    public static final double kTurnI = 1.0;
-    public static final double kTurnD = 1.0;
+    public static final double kTurnI = 0;
+    public static final double kTurnD = 0;
     public static final double kTurnToleranceDeg = 1.0;
     public static final double kTurnRateToleranceDegPerS = 1.0;
   }

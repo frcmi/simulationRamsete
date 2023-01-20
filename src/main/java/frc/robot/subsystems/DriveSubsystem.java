@@ -7,6 +7,8 @@
 package frc.robot.subsystems;
 
 
+import java.util.function.BiConsumer;
+
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
@@ -14,13 +16,16 @@ import com.ctre.phoenix.sensors.WPI_Pigeon2;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.utils.DrivebaseSimFX;
 import frc.robot.utils.TalonFXUtil;
@@ -39,6 +44,7 @@ public class DriveSubsystem extends SubsystemBase {
     private DifferentialDriveOdometry odometry = new DifferentialDriveOdometry(new Rotation2d(), 0, 0, new Pose2d());
 
     private DifferentialDrive diffDrive = new DifferentialDrive(leftMaster, rightMaster);
+    public DifferentialDriveKinematics diffDriveKine = new DifferentialDriveKinematics(Constants.DriveConstants.kTrackwidthMeters);
 
     private DrivebaseSimFX driveSim = new DrivebaseSimFX(leftMaster, rightMaster, pidgey);
 
@@ -71,7 +77,7 @@ public class DriveSubsystem extends SubsystemBase {
         diffDrive.arcadeDrive(xSpeed * DriveConstants.speedMultiplier, zRotation * DriveConstants.rotationMultiplier, squareInputs);
     }
 
-    public void tankDriveVolts(double leftVolts, double rightVolts) {
+    public void tankDriveVolts(double rightVolts, double leftVolts) {
         leftMaster.setVoltage(leftVolts);
         rightMaster.setVoltage(rightVolts);
         diffDrive.feed();
@@ -95,7 +101,7 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public double getLeftVelocity() {
-        return leftMaster.getSelectedSensorVelocity() * DriveConstants.kEncoderDistancePerTick * 10;
+        return leftMaster.getSelectedSensorVelocity() * DriveConstants.kEncoderDistancePerTick * 10 * SmartDashboard.getNumber("left speed", 10);
     }
     
     public double getRightVelocity() {
