@@ -2,7 +2,8 @@
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
-      "/SmartDashboard/Field": "Field2d"
+      "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/PPRamseteCommand_field": "Field2d"
     },
     "windows": {
       "/SmartDashboard/Field": {
@@ -11,5 +12,17 @@
         }
       }
     }
+  },
+  "NetworkTables": {
+    "transitory": {
+      "SmartDashboard": {
+        "Field": {
+          "open": false
+        }
+      }
+    }
+  },
+  "NetworkTables View": {
+    "visible": false
   }
 }

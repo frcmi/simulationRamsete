@@ -67,5 +67,9 @@ public final class Constants {
     public static final double kTurnD = 1.0;
     public static final double kTurnToleranceDeg = 1.0;
     public static final double kTurnRateToleranceDegPerS = 1.0;
+
+    public static final String kNorthPathFileName = "North Path";
+    public static final String kSouthPathFileName = "South Path";
+    public static final String kWestPathFileName = "West Path";
   }
 }

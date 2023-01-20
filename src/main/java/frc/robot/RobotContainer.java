@@ -23,6 +23,7 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.JoystickDriveCommand;
+import frc.robot.commands.PPTrajectoryCommand;
 import frc.robot.commands.autonomous.DriveForDistanceCommand;
 import frc.robot.commands.autonomous.DriveForTimeCommand;
 import frc.robot.commands.autonomous.DriveRamseteTrajectory;
@@ -37,6 +38,7 @@ public class RobotContainer {
 
     // Subsystems
     public static final DriveSubsystem drivetrain = new DriveSubsystem();
+    public static PPTrajectoryCommand m_PPTrajectoryCommand = new PPTrajectoryCommand(drivetrain, AutoConstants.kNorthPathFileName);
 
     public RobotContainer() {
         DriverStation.silenceJoystickConnectionWarning(true);
@@ -69,7 +71,7 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return Commands.sequence(Autos.goForSeconds(0.1, drivetrain), Autos.spinAuto(drivetrain));
+        return m_PPTrajectoryCommand.followTrajectoryCommand(false);
     }
 
     public void simulationPeriodic() {
