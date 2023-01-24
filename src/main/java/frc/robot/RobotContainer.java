@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.plaf.basic.BasicTreeUI.TreeIncrementAction;
+
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
@@ -77,38 +79,29 @@ public class RobotContainer {
     }
 
     private void initializeAutonomousOptions() {
-        SmartDashboard.setDefaultNumber("left speed", 1);
-        /*
-        s
-        v
-        a
-        p
-        i
-        d
-        */
-        /*chooser.setDefaultOption("Drive Ramsete Trajectory", 
-                new DriveRamseteTrajectory(drivetrain));
-        chooser.addOption("Drive For Distance",
-                new DriveForDistanceCommand(drivetrain, 0.75, 5.0));
-        chooser.addOption("Drive For Time",
-                new DriveForTimeCommand(drivetrain, 0.75, 3.0));
-        SmartDashboard.putData("Autonomous Options", chooser);
-        */
-        
+        SmartDashboard.setDefaultNumber("1Feedforward s", 1);
+        SmartDashboard.setDefaultNumber("2Feedforward v", 0);
+        SmartDashboard.setDefaultNumber("3Feedforward a", 0);
+        SmartDashboard.setDefaultNumber("4Pidconstants p", 1);
+        SmartDashboard.setDefaultNumber("5Pidconstants i", 0);
+        SmartDashboard.setDefaultNumber("6Pidconstatns d", 0);
     }
 
-    PIDConstants pidConstants = new PIDConstants(1, 0, 0);
-    SimpleMotorFeedforward motorFeedforward = new SimpleMotorFeedforward(1, 0, 1);
 
-    RamseteAutoBuilder autoBuilder = new RamseteAutoBuilder(
-        drivetrain::getPose, drivetrain::resetOdometry, ramsController, drivetrain.diffDriveKine, motorFeedforward,
-         drivetrain::getWheelSpeeds, pidConstants, drivetrain::tankDriveVolts, eventHashMap, drivetrain);
-
-    ArrayList<PathPlannerTrajectory> pathGroup = (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("PickupAndDeliver", new PathConstraints(4, 3));
-    Command fullAuto  = autoBuilder.fullAuto(pathGroup);
 
     public Command getAutonomousCommand() {
-        return fullAuto;
+        /*
+        PIDConstants pidConstants = new PIDConstants(SmartDashboard.getNumber("1Feedforward s", 0), SmartDashboard.getNumber("2Feedforward v", 0), SmartDashboard.getNumber("3Feedforward a", 0));
+        SimpleMotorFeedforward motorFeedforward = new SimpleMotorFeedforward(SmartDashboard.getNumber("4Pidconstants p", 0), SmartDashboard.getNumber("5Pidconstants i", 0), SmartDashboard.getNumber("6Pidconstants d", 0));
+    
+        RamseteAutoBuilder autoBuilder = new RamseteAutoBuilder(
+            drivetrain::getPose, drivetrain::resetOdometry, ramsController, drivetrain.diffDriveKine, motorFeedforward,
+             drivetrain::getWheelSpeeds, pidConstants, drivetrain::tankDriveVolts, eventHashMap, drivetrain);
+    
+        ArrayList<PathPlannerTrajectory> pathGroup = (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("PickupAndDeliver", new PathConstraints(4, 3));
+        return autoBuilder.fullAuto(pathGroup);
+        */
+        return Autos.combineAutosPoorly("MovePt1", "MovePt2", drivetrain, true);
     }
 
     public void simulationPeriodic() {

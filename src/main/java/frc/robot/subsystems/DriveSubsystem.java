@@ -101,7 +101,7 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public double getLeftVelocity() {
-        return leftMaster.getSelectedSensorVelocity() * DriveConstants.kEncoderDistancePerTick * 10 * SmartDashboard.getNumber("left speed", 10);
+        return leftMaster.getSelectedSensorVelocity() * DriveConstants.kEncoderDistancePerTick * 10;
     }
     
     public double getRightVelocity() {
