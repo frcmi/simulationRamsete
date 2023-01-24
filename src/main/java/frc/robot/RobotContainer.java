@@ -40,6 +40,7 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.JoystickDriveCommand;
+import frc.robot.commands.TrajectoryFunctions;
 import frc.robot.commands.autonomous.DriveForDistanceCommand;
 import frc.robot.commands.autonomous.DriveForTimeCommand;
 import frc.robot.commands.autonomous.DriveRamseteTrajectory;
@@ -90,18 +91,20 @@ public class RobotContainer {
 
 
     public Command getAutonomousCommand() {
-        /*
-        PIDConstants pidConstants = new PIDConstants(SmartDashboard.getNumber("1Feedforward s", 0), SmartDashboard.getNumber("2Feedforward v", 0), SmartDashboard.getNumber("3Feedforward a", 0));
-        SimpleMotorFeedforward motorFeedforward = new SimpleMotorFeedforward(SmartDashboard.getNumber("4Pidconstants p", 0), SmartDashboard.getNumber("5Pidconstants i", 0), SmartDashboard.getNumber("6Pidconstants d", 0));
-    
-        RamseteAutoBuilder autoBuilder = new RamseteAutoBuilder(
-            drivetrain::getPose, drivetrain::resetOdometry, ramsController, drivetrain.diffDriveKine, motorFeedforward,
-             drivetrain::getWheelSpeeds, pidConstants, drivetrain::tankDriveVolts, eventHashMap, drivetrain);
-    
-        ArrayList<PathPlannerTrajectory> pathGroup = (ArrayList<PathPlannerTrajectory>) PathPlanner.loadPathGroup("PickupAndDeliver", new PathConstraints(4, 3));
-        return autoBuilder.fullAuto(pathGroup);
-        */
-        return Autos.combineAutosPoorly("MovePt1", "MovePt2", drivetrain, true);
+        PathConstraints pathConstraints = new PathConstraints(4, 3);
+
+        PathPlannerTrajectory combinedTrajectory = TrajectoryFunctions.combineTrajectories(
+            PathPlanner.loadPath("MovePt1", pathConstraints),
+            PathPlanner.loadPath("MovePt2", pathConstraints),
+            PathPlanner.loadPath("MovePt3", pathConstraints));
+
+        return TrajectoryFunctions.followTrajectoryWithEvents(
+            combinedTrajectory, 
+            drivetrain, 
+            new String[] {"event", "event1"},
+            new PrintCommand("halfway done with traj 1!"),
+            new PrintCommand("halfway done with traj 2!")
+        );
     }
 
     public void simulationPeriodic() {
