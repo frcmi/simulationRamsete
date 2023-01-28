@@ -24,6 +24,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.JoystickDriveCommand;
 import frc.robot.commands.PPTrajectoryCommand;
+import frc.robot.commands.autonomous.AutoPathMerger;
 import frc.robot.commands.autonomous.DriveForDistanceCommand;
 import frc.robot.commands.autonomous.DriveForTimeCommand;
 import frc.robot.commands.autonomous.DriveRamseteTrajectory;
@@ -38,7 +39,7 @@ public class RobotContainer {
 
     // Subsystems
     public static final DriveSubsystem drivetrain = new DriveSubsystem();
-    public static PPTrajectoryCommand m_PPTrajectoryCommand = new PPTrajectoryCommand(drivetrain, AutoConstants.kNorthPathFileName);
+    public static AutoPathMerger m_Merger = new AutoPathMerger(drivetrain, AutoConstants.kFirstFileNameUpWest, true, AutoConstants.kParkLowerKeyword);
 
     public RobotContainer() {
         DriverStation.silenceJoystickConnectionWarning(true);
@@ -71,7 +72,7 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return m_PPTrajectoryCommand.followTrajectoryCommand(false);
+        return m_Merger.getMergedPathCommand();
     }
 
     public void simulationPeriodic() {

@@ -4,7 +4,13 @@
 
 package frc.robot;
 
+import java.util.HashMap;
+
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.commands.GrabCommand;
+import frc.robot.commands.PlaceCommand;
+import frc.robot.commands.autonomous.AutoBalance;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -68,8 +74,18 @@ public final class Constants {
     public static final double kTurnToleranceDeg = 1.0;
     public static final double kTurnRateToleranceDegPerS = 1.0;
 
-    public static final String kNorthPathFileName = "North Path";
-    public static final String kSouthPathFileName = "South Path";
-    public static final String kWestPathFileName = "West Path";
+    public static final HashMap<String, Command> eventMap = new HashMap<>() {{
+      put("grab", new GrabCommand()); put("place", new PlaceCommand()); put("balance", new AutoBalance());
+    }};
+
+    public static final String kParkUpperKeyword = "Upper";
+    public static final String kParkMiddleKeyword = "Middle";
+    public static final String kParkLowerKeyword = "Lower";
+
+    public static final String kFirstFileNameNorth = "North Path Up Part 1";
+    public static final String kFirstFileNameUpWest = "West Path Up Part 1";
+    public static final String kFirstFileNameDownWest = "West Path Down Part 1";
+    public static final String kFirstFileNameSouth = "South Path Down Part 1";
+
   }
 }

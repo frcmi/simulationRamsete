@@ -42,7 +42,7 @@
       "isStopPoint": true,
       "stopEvent": {
         "names": [
-          "Grab"
+          "grab"
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "none",

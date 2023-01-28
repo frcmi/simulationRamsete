@@ -3,6 +3,7 @@ package frc.robot.commands;
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.commands.FollowPathWithEvents;
 import com.pathplanner.lib.commands.PPRamseteCommand;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -23,15 +24,24 @@ public class PPTrajectoryCommand extends CommandBase {
     protected DriveSubsystem mDriveSubsystem;
     protected String nameOfFile;
     protected PathPlannerTrajectory traj;
+    protected boolean isFirstPath;
 
-    public PPTrajectoryCommand(DriveSubsystem driveSubsystem, String fileName) {
+    public PPTrajectoryCommand(DriveSubsystem driveSubsystem, String fileName, boolean firstPath) {
         mDriveSubsystem = driveSubsystem;
         nameOfFile = fileName;
+        isFirstPath = firstPath;
         PathPlannerTrajectory ppTraj = PathPlanner.loadPath(nameOfFile, new PathConstraints(AutoConstants.kMaxSpeedMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared));
         traj = ppTraj;
     }
 
-    public Command followTrajectoryCommand(boolean isFirstPath) {
+    public PPTrajectoryCommand(DriveSubsystem driveSubsystem, PathPlannerTrajectory pathPlannerTraj, boolean firstPath) {
+        mDriveSubsystem = driveSubsystem;
+        nameOfFile = null;
+        isFirstPath = firstPath;
+        traj = pathPlannerTraj;
+    }
+
+    public Command followTrajectoryCommand() {
         return new SequentialCommandGroup(
             new InstantCommand(() -> {
               // Reset odometry for the first path you run during auto
@@ -53,6 +63,14 @@ public class PPTrajectoryCommand extends CommandBase {
                 mDriveSubsystem // Requires this drive subsystem
             )
         );
+    }
+
+    public FollowPathWithEvents getPathWithEvents () {
+        return new FollowPathWithEvents(followTrajectoryCommand(), traj.getMarkers(), AutoConstants.eventMap);
+    }
+
+    public PathPlannerTrajectory getTrajectory() {
+        return traj;
     }
 
 }
